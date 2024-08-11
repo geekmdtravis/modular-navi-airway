@@ -54,7 +54,7 @@ def img_3d_erosion_or_expansion(img_3d, kernel_size=3, device = torch.device('cu
     return img_3d
     
 def fill_inner_hole(seg_onehot_final, need_erosion_or_expansion = False, kernel_size=3, device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')):
-    seg_onehot_background = np.array(seg_onehot_final==0, dtype=np.int)
+    seg_onehot_background = np.array(seg_onehot_final==0, dtype=np.int16)
     labels_bg = label_regions(seg_onehot_background)
     
     unique_vals, unique_val_counts = np.unique(labels_bg, return_counts = True)
@@ -62,7 +62,7 @@ def fill_inner_hole(seg_onehot_final, need_erosion_or_expansion = False, kernel_
     unique_vals = unique_vals[unique_vals>0]
     sort_locs = np.argsort(unique_val_counts)[::-1]
     
-    bg = np.array(labels_bg==unique_vals[sort_locs][0], dtype=np.int)
+    bg = np.array(labels_bg==unique_vals[sort_locs][0], dtype=np.int16)
     
     if need_erosion_or_expansion:
         bg = -img_3d_erosion_or_expansion(-bg, kernel_size=kernel_size, device = device)
@@ -120,16 +120,16 @@ class Cluster_super_vox():
         
         self.val_outlayer_area = dict()
         for idx, unique_val in enumerate(self.unique_vals):
-            print("get val_outlayer area of all vals: "+str(idx/len(self.unique_vals)), end="\r")
+            #print("get val_outlayer area of all vals: "+str(idx/len(self.unique_vals)), end="\r")
             self.val_outlayer_area[unique_val] = self.A_LARGE_NUM
         
         for idx, current_val in enumerate(self.unique_vals):
-            print('processing: '+str(idx/len(self.unique_vals))+' pixel val: '+str(current_val), end="\r")
+            #print('processing: '+str(idx/len(self.unique_vals))+' pixel val: '+str(current_val), end="\r")
             if self.val_labels[current_val]!=self.UN_PROCESSED:
                 continue
             valid_neighbor_vals = self.regionQuery(current_val)
             if len(valid_neighbor_vals)>0:
-                print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(valid_neighbor_vals), end="\r")
+                #print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(valid_neighbor_vals), end="\r")
                 self.val_labels[current_val] = current_val
                 self.growCluster(valid_neighbor_vals, current_val)
             else:
@@ -157,16 +157,16 @@ class Cluster_super_vox():
         
         self.val_outlayer_area = dict()
         for idx, unique_val in enumerate(self.unique_vals):
-            print("get val_outlayer area of all vals: "+str(idx/len(self.unique_vals)), end="\r")
+            #print("get val_outlayer area of all vals: "+str(idx/len(self.unique_vals)), end="\r")
             self.val_outlayer_area[unique_val] = self.get_outlayer_area(unique_val)
         
         for idx, current_val in enumerate(self.unique_vals):
-            print('processing: '+str(idx/len(self.unique_vals))+' pixel val: '+str(current_val), end="\r")
+            #print('processing: '+str(idx/len(self.unique_vals))+' pixel val: '+str(current_val), end="\r")
             if self.val_labels[current_val]!=self.UN_PROCESSED:
                 continue
             valid_neighbor_vals = self.regionQuery(current_val)
             if len(valid_neighbor_vals)>0:
-                print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(valid_neighbor_vals), end="\r")
+                #print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(valid_neighbor_vals), end="\r")
                 self.val_labels[current_val] = current_val
                 self.growCluster(valid_neighbor_vals, current_val)
             else:
@@ -205,12 +205,12 @@ class Cluster_super_vox():
         neighbor_val_counts = neighbor_val_counts[neighbor_vals>0]
         neighbor_vals = neighbor_vals[neighbor_vals>0]
         
-        print("current_crop_outlayer_area: "+str(current_crop_outlayer_area), end="\r")
+        #print("current_crop_outlayer_area: "+str(current_crop_outlayer_area), end="\r")
         
         valid_neighbor_vals = self.neighborCheck(neighbor_vals, neighbor_val_counts, current_crop_outlayer_area)
         
-        print("valid_neighbor_vals: "+str(valid_neighbor_vals), end="\r")
-        print("number of valid_neighbor_vals: "+str(len(valid_neighbor_vals)), end="\r")
+        #print("valid_neighbor_vals: "+str(valid_neighbor_vals), end="\r")
+        #print("number of valid_neighbor_vals: "+str(len(valid_neighbor_vals)), end="\r")
         
         return valid_neighbor_vals
         
@@ -224,8 +224,8 @@ class Cluster_super_vox():
             if neighbor_val_counts[idx]>=self.min_touching_area or \
             (neighbor_val_counts[idx]/current_crop_outlayer_area)>=self.min_touching_percentage or \
             (neighbor_val_counts[idx]/self.val_outlayer_area[neighbor_val])>=self.min_touching_percentage:
-                print("touching_area: "+str(neighbor_val_counts[idx]), end="\r")
-                print("touching_percentage: "+str(neighbor_val_counts[idx]/current_crop_outlayer_area)+\
+                #print("touching_area: "+str(neighbor_val_counts[idx]), end="\r")
+                #print("touching_percentage: "+str(neighbor_val_counts[idx]/current_crop_outlayer_area)+\
                       " and "+str(neighbor_val_counts[idx]/self.val_outlayer_area[neighbor_val]), end="\r")
                 valid_neighbor_vals.append(neighbor_val)
         
@@ -244,7 +244,7 @@ class Cluster_super_vox():
                 self.val_labels[valid_neighbor_val]=current_val
                 self.input_3d_img[self.input_3d_img==valid_neighbor_val]=current_val
             new_valid_neighbor_vals = self.regionQuery(current_val)
-            print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(new_valid_neighbor_vals), end="\r")
+            #print('Assign label '+str(current_val)+' to current val\'s neighbors: '+str(new_valid_neighbor_vals), end="\r")
             self.growCluster(new_valid_neighbor_vals, current_val)
         else:
             return
@@ -312,7 +312,7 @@ def add_broken_parts_to_the_result(connection_dict, model_output_prob_map, seg_p
     seg_processed_onehot_II = copy.deepcopy(seg_processed_onehot)
     
     for idx, item in enumerate(center_map_end_point_dict.keys()):
-        print(idx/len(center_map_end_point_dict.keys()), end="\r")
+        #print(idx/len(center_map_end_point_dict.keys()), end="\r")
         search_center = center_map_end_point_dict[item]
         model_output_prob_map_crop, crop_coord = get_crop(model_output_prob_map, search_center, search_range=search_range)
         seg_processed_onehot_crop, _ = get_crop(seg_processed_onehot, search_center, search_range=search_range)
@@ -321,16 +321,16 @@ def add_broken_parts_to_the_result(connection_dict, model_output_prob_map, seg_p
 
         model_output_crop_delete_current_seg = model_output_prob_map_crop-seg_processed_onehot_crop
         current_threshold = threshold
-        model_output_crop_revised = np.array(model_output_crop_delete_current_seg>current_threshold, dtype=np.int)
+        model_output_crop_revised = np.array(model_output_crop_delete_current_seg>current_threshold, dtype=np.int16)
 
         while np.sum(model_output_crop_revised)<=size_of_seg_crop and current_threshold>=min_threshold:
             current_threshold-=delta_threshold
-            model_output_crop_revised = np.array(model_output_crop_delete_current_seg>current_threshold, dtype=np.int)
+            model_output_crop_revised = np.array(model_output_crop_delete_current_seg>current_threshold, dtype=np.int16)
 
         seg_processed_onehot_II[crop_coord[0]:crop_coord[1],
                          crop_coord[2]:crop_coord[3],
                          crop_coord[4]:crop_coord[5]]+=model_output_crop_revised
-    seg_processed_onehot_II = np.array(seg_processed_onehot_II>0, dtype = np.int)
+    seg_processed_onehot_II = np.array(seg_processed_onehot_II>0, dtype = np.int16)
     
     return seg_processed_onehot_II
 
