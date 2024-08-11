@@ -113,7 +113,8 @@ def semantic_segment_crop_and_cat(raw_img, model, device, crop_cube_size=256, st
                 
                 try:
                     raw_img_crop=raw_img_crop.reshape(1, 1, crop_cube_size[0], crop_cube_size[1], crop_cube_size[2])
-                except:
+                except Exception as e:
+                    print(e)
                     #print("raw_img_crop shape: "+str(raw_img_crop.shape))
                     #print("raw_img shape: "+str(raw_img.shape))
                     #print("i, j, k: "+str((i,j,k)))
