@@ -75,9 +75,9 @@ CT_filename = 'CT.nii.gz'
 LungMask_filename = 'LungMask.nii.gz'
 Output_filename = 'Airway.nii.gz'
 
-CT_path = os.path.join(path_to_folder, mpi, CT_filename)
-Lung_path = os.path.join(path_to_folder, mpi, LungMask_filename)
-Output_path = os.path.join(path_to_folder, mpi, Output_filename)
+CT_path = os.path.join(path_to_folder, CT_filename)
+Lung_path = os.path.join(path_to_folder, LungMask_filename)
+Output_path = os.path.join(path_to_folder, Output_filename)
 
 print("Segmenting Airways...")
 segmentAirway(CT_path, Lung_path, Output_path)
