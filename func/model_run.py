@@ -83,7 +83,7 @@ def semantic_segment_crop_and_cat(raw_img, model, device, crop_cube_size=256, st
     for i in np.arange(0, img_shape[0], stride[0]):
         for j in np.arange(0, img_shape[1], stride[1]):
             for k in np.arange(0, img_shape[2], stride[2]):
-                print('Progress of segment_3d_img: '+str(np.int(count/total*100))+'%', end='\r')
+                print('Progress of segment_3d_img: '+str(np.int16(count/total*100))+'%', end='\r')
                 if i+crop_cube_size[0]<=img_shape[0]:
                     x_start_input=i
                     x_end_input=i+crop_cube_size[0]
@@ -114,10 +114,10 @@ def semantic_segment_crop_and_cat(raw_img, model, device, crop_cube_size=256, st
                 try:
                     raw_img_crop=raw_img_crop.reshape(1, 1, crop_cube_size[0], crop_cube_size[1], crop_cube_size[2])
                 except:
-                    print("raw_img_crop shape: "+str(raw_img_crop.shape))
-                    print("raw_img shape: "+str(raw_img.shape))
-                    print("i, j, k: "+str((i,j,k)))
-                    print("crop from: "+str((x_start_input, x_end_input, y_start_input, y_end_input, z_start_input, z_end_input)))
+                    #print("raw_img_crop shape: "+str(raw_img_crop.shape))
+                    #print("raw_img shape: "+str(raw_img.shape))
+                    #print("i, j, k: "+str((i,j,k)))
+                    #print("crop from: "+str((x_start_input, x_end_input, y_start_input, y_end_input, z_start_input, z_end_input)))
                 raw_img_crop=from_numpy(raw_img_crop).float().to(device)
                 
                 with torch.no_grad():
