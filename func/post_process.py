@@ -225,8 +225,7 @@ class Cluster_super_vox():
             (neighbor_val_counts[idx]/current_crop_outlayer_area)>=self.min_touching_percentage or \
             (neighbor_val_counts[idx]/self.val_outlayer_area[neighbor_val])>=self.min_touching_percentage:
                 #print("touching_area: "+str(neighbor_val_counts[idx]), end="\r")
-                #print("touching_percentage: "+str(neighbor_val_counts[idx]/current_crop_outlayer_area)+\
-                      " and "+str(neighbor_val_counts[idx]/self.val_outlayer_area[neighbor_val]), end="\r")
+                #print("touching_percentage: "+str(neighbor_val_counts[idx]/current_crop_outlayer_area)+" and "+str(neighbor_val_counts[idx]/self.val_outlayer_area[neighbor_val]), end="\r")
                 valid_neighbor_vals.append(neighbor_val)
         
         double_checked_valid_neighbor_vals = []
