@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import SimpleITK as sitk
 import os
-from lungmask import mask
+from lungmask import mask as LMInferer
 
 from func.model_arch import SegAirwayModel
 from func.model_run import semantic_segment_crop_and_cat
@@ -32,6 +32,14 @@ def bbox2_3D(mask):
 
 def segmentAirway(raw_img_path, lung_path, savepath):
     in_img = load_one_CT_img(raw_img_path)
+    if os.path.isfile(lung_path) == False:
+        inferer = LMInferer()
+        raw_img = sitk.ReadImage(raw_img_path)
+        segmentation = inferer.apply(raw_img)
+        segmentation = np.uint8(segmentation>0)
+        lungmask = sitk.GetImageFromArray(segmentation)
+        lungmask.CopyInformation(raw_img)
+        sitk.WriteImage(lungmask, lung_path)
     lmg = load_one_CT_img(lung_path)
     rmin, rmax, cmin, cmax, zmin, zmax = bbox2_3D(lmg)
     raw_img = in_img[rmin:rmax, cmin:cmax, zmin:zmax]
