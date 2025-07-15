@@ -1,0 +1,22 @@
+name: modular-navi-airway
+channels:
+  - defaults
+dependencies:
+  - python=3.13
+  - pip
+  - pip:
+    - SimpleITK
+    - edt
+    - h5py
+    - lungmask
+    - matplotlib
+    - nibabel
+    - numpy
+    - opencv-python
+    - pandas
+    - plotly
+    - pydicom
+    - scikit-image
+    - torch
+    - torchio
+    - torchvision
