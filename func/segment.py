@@ -150,9 +150,19 @@ def run_segmentation(
         print(f"  Raw CT directory not found at {_raw_ct_dir}")
         return
 
+    raw_ct_path = Path(raw_ct_dir)
+    if not raw_ct_path.exists():
+        print(f"  Raw CT file not found at {raw_ct_path}")
+        return
+
     _lung_mask_dir = Path(lung_mask_dir)
     if not _lung_mask_dir.exists():
         print(f"  Lung mask directory not found at {_lung_mask_dir}")
+        return
+
+    lung_mask_path = Path(lung_mask_dir)
+    if not lung_mask_path.exists():
+        print(f"  Lung mask file not found at {lung_mask_path}")
         return
 
     _output_dir = Path(output_dir)
@@ -165,8 +175,8 @@ def run_segmentation(
 
     try:
         segment_airway(
-            raw_img_path=raw_ct_dir,
-            lung_path=lung_mask_dir,
+            raw_img_path=str(raw_ct_path),
+            lung_path=str(lung_mask_path),
             savepath=str(_savepath),
         )
         print(f"  Successfully processed {_savepath}")
