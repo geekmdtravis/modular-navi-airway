@@ -150,7 +150,7 @@ def run_segmentation(
         print(f"  Raw CT directory not found at {_raw_ct_dir}")
         return
 
-    raw_ct_path = Path(raw_ct_dir)
+    raw_ct_path = _raw_ct_dir / filename
     if not raw_ct_path.exists():
         print(f"  Raw CT file not found at {raw_ct_path}")
         return
@@ -160,7 +160,7 @@ def run_segmentation(
         print(f"  Lung mask directory not found at {_lung_mask_dir}")
         return
 
-    lung_mask_path = Path(lung_mask_dir)
+    lung_mask_path = _lung_mask_dir / filename
     if not lung_mask_path.exists():
         print(f"  Lung mask file not found at {lung_mask_path}")
         return
